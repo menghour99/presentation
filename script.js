@@ -23,6 +23,18 @@
   });
   const dotButtons = Array.from(railDots.querySelectorAll('button'));
 
+  const slidePicker = document.getElementById('slidePicker');
+  slides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slide-picker-btn';
+    btn.textContent = String(i + 1).padStart(2, '0');
+    btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    btn.addEventListener('click', () => goTo(i));
+    slidePicker.appendChild(btn);
+  });
+  const pickerButtons = Array.from(slidePicker.querySelectorAll('button'));
+
   function updatePartTags(index) {
     let activePart = null;
     if (index >= 2 && index <= 8) activePart = '1';
@@ -40,6 +52,9 @@
       }
     });
     dotButtons.forEach((d, i) => d.classList.toggle('active', i === index));
+    pickerButtons.forEach((b, i) => b.classList.toggle('active', i === index));
+    const activePickerBtn = pickerButtons[index];
+    if (activePickerBtn) activePickerBtn.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     currentNumEl.textContent = String(index + 1).padStart(2, '0');
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === total - 1;
@@ -145,6 +160,19 @@
   }
   stage.addEventListener('pointerdown', (e) => {
     spawnRipple(e.clientX, e.clientY);
+  });
+
+  const agendaLinks = Array.from(document.querySelectorAll('.agenda-link'));
+  agendaLinks.forEach(el => {
+    const idx = parseInt(el.dataset.goto, 10);
+    if (Number.isNaN(idx)) return;
+    el.addEventListener('click', () => goTo(idx));
+    el.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Enter' || evt.key === ' ') {
+        evt.preventDefault();
+        goTo(idx);
+      }
+    });
   });
 
   const canvas = document.getElementById('mesh');
