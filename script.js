@@ -13,7 +13,6 @@
   let current = 0;
   let isAnimating = false;
 
-  // Build rail dots
   slides.forEach((_, i) => {
     const li = document.createElement('li');
     const btn = document.createElement('button');
@@ -62,7 +61,7 @@
   if (startBtn) {
     startBtn.addEventListener('click', () => {
       startBtn.classList.remove('pressed');
-      void startBtn.offsetWidth; // restart animation
+      void startBtn.offsetWidth;
       startBtn.classList.add('pressed');
       goTo(current + 1);
     });
@@ -75,7 +74,6 @@
     if (e.key === 'End') goTo(total - 1);
   });
 
-  // Touch / swipe support
   let touchStartX = 0;
   const stage = document.getElementById('stage');
   stage.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
@@ -86,7 +84,6 @@
 
   render(0);
 
-  // ===== Tap-to-reveal detail interactions =====
   const revealEls = Array.from(document.querySelectorAll('.tap-reveal'));
 
   function spawnSonar(el, evt) {
@@ -110,7 +107,6 @@
 
   function toggleReveal(el, evt) {
     const willOpen = !el.classList.contains('open');
-    // close siblings within the same slide for focus, keep it lively but tidy
     const slide = el.closest('.slide');
     if (slide) {
       slide.querySelectorAll('.tap-reveal.open').forEach(other => {
@@ -123,8 +119,7 @@
     el.classList.toggle('open', willOpen);
     el.setAttribute('aria-expanded', String(willOpen));
     el.classList.remove('just-tapped');
-    // eslint-disable-next-line no-unused-expressions
-    void el.offsetWidth; // restart animation
+    void el.offsetWidth;
     el.classList.add('just-tapped');
     if (el.classList.contains('visual-tap') && willOpen) spawnSonar(el, evt);
   }
@@ -139,7 +134,6 @@
     });
   });
 
-  // ===== Global touch/click ripple feedback =====
   function spawnRipple(x, y) {
     if (prefersReducedGlobal()) return;
     const r = document.createElement('div');
@@ -153,7 +147,6 @@
     spawnRipple(e.clientX, e.clientY);
   });
 
-  // ===== Ambient network canvas =====
   const canvas = document.getElementById('mesh');
   const ctx = canvas.getContext('2d');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
